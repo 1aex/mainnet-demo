@@ -1,13 +1,13 @@
 providers = ["node"]
 
 [variables]
-NODE_VERSION = "18"
+NODE_VERSION = "20"
 
 [phases.install]
-cmds = ["npm ci"]
+cmds = ["npm ci --only=production=false"]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = ["npx vite build"]
 
 [phases.deploy]
 cmd = "npm run preview"
