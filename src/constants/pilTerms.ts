@@ -137,7 +137,7 @@ export type IPArtifactType = 'image' | 'audio' | 'video' | 'document' | 'pdf'
 
 export const getArtifactTypeFromMimeType = (mimeType: string): IPArtifactType => {
   for (const type of IP_ARTIFACT_TYPES) {
-    if (type.mimeTypes.includes(mimeType)) {
+    if ((type.mimeTypes as readonly string[]).includes(mimeType)) {
       return type.value as IPArtifactType
     }
   }

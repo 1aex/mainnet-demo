@@ -1,25 +1,16 @@
-import { useState, useRef, ChangeEvent } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
-import { Upload, FileText, CheckCircle2, X } from "lucide-react";
-import { Control } from "react-hook-form";
+import { useState, useRef, type ChangeEvent } from "react";
 import { PinataSDK } from 'pinata-web3';
 
 interface FileUploadSectionProps {
-  control: Control<any>;
   fileUploaded: boolean;
   setFileUploaded: (value: boolean) => void;
   uploadedFileName: string;
   setUploadedFileName: (value: string) => void;
-  label?: string; // Add label prop
-  imageOnly?: boolean; // Add imageOnly prop
+  label?: string;
+  imageOnly?: boolean;
 }
 
 export const FileUploadSection = ({
-  control,
   fileUploaded,
   setFileUploaded,
   uploadedFileName,
@@ -27,7 +18,7 @@ export const FileUploadSection = ({
   label = "Upload File",
   imageOnly = false,
 }: FileUploadSectionProps) => {
-  const { toast } = useToast();
+  // const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -45,11 +36,7 @@ export const FileUploadSection = ({
     
     // Check file size (max 50MB)
     if (file.size > 50 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Maximum file size is 50MB.",
-        variant: "destructive",
-      });
+      console.error("File too large");
       return;
     }
     
@@ -63,11 +50,7 @@ export const FileUploadSection = ({
     ];
     
     if (!allowedTypes.includes(file.type)) {
-      toast({
-        title: "Unsupported file type",
-        description: "Please upload a PDF, JPG, PNG, MP3, or MP4 file.",
-        variant: "destructive",
-      });
+      console.error("Unsupported file type");
       return;
     }
     
@@ -88,17 +71,10 @@ export const FileUploadSection = ({
 
       console.log("File uploaded successfully to IPFS:", ipfsUrl);
 
-      toast({
-        title: "File uploaded successfully",
-        description: "Your file has been uploaded to IPFS and is ready for registration.",
-      });
+      console.log("File uploaded successfully");
     } catch (error) {
       console.error("Upload error:", error);
-      toast({
-        title: "Upload failed",
-        description: error instanceof Error ? error.message : "There was an error uploading your file. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Upload failed:", error);
     } finally {
       setUploading(false);
     }
@@ -130,85 +106,69 @@ export const FileUploadSection = ({
 
   return (
     <div className="space-y-2">
-      <Label>{label}</Label>
+      <label className="block text-sm font-medium text-gray-700">{label}</label>
       <div 
-        className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/50"
+        className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
         {fileUploaded ? (
           <div className="flex flex-col items-center space-y-2">
             <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
+              <span className="text-green-600 text-lg">✓</span>
             </div>
             <div className="text-sm font-medium flex items-center gap-1.5">
-              <FileText className="h-4 w-4" />
+              <span className="text-gray-600">📄</span>
               <span>{uploadedFileName}</span>
             </div>
             <div className="flex space-x-2">
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="sm"
+              <button
+                type="button"
+                className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50"
                 onClick={() => setFileUploaded(false)}
               >
-                <X className="h-4 w-4 mr-1" />
-                Remove
-              </Button>
-              <Button
+                ❌ Remove
+              </button>
+              <button
                 type="button"
-                variant="outline"
-                size="sm"
+                className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50"
                 onClick={triggerFileInput}
               >
-                <Upload className="h-4 w-4 mr-1" />
-                Replace
-              </Button>
+                📤 Replace
+              </button>
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center space-y-4">
-            <div className="h-12 w-12 rounded-full bg-ippurple/10 flex items-center justify-center">
-              <Upload className="h-6 w-6 text-ippurple" />
+            <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+              <span className="text-blue-600 text-lg">📤</span>
             </div>
             <div>
               <p className="text-sm font-medium">
                 Drag and drop your file here, or click to browse
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 Supports PDF, JPG, PNG, MP3, MP4 (max 50MB)
               </p>
             </div>
-            <FormField
-              control={control}
-              name="mediaType"
-              render={({ field }) => (
-                <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-[240px]">
-                        <SelectValue placeholder="Select media type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {imageOnly ? (
-                        <SelectItem value="image">Image</SelectItem>
-                      ) : (
-                        <>
-                          <SelectItem value="image">Image</SelectItem>
-                          <SelectItem value="video">Video</SelectItem>
-                          <SelectItem value="audio">Audio</SelectItem>
-                          <SelectItem value="script">Script</SelectItem>
-                          <SelectItem value="pdf">PDF Document</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </>
-                      )}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
+            <select
+              className="w-60 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              defaultValue=""
+            >
+              <option value="" disabled>Select media type</option>
+              {imageOnly ? (
+                <option value="image">Image</option>
+              ) : (
+                <>
+                  <option value="image">Image</option>
+                  <option value="video">Video</option>
+                  <option value="audio">Audio</option>
+                  <option value="script">Script</option>
+                  <option value="pdf">PDF Document</option>
+                  <option value="other">Other</option>
+                </>
               )}
-            />
+            </select>
             <input
               type="file"
               ref={fileInputRef}
@@ -216,21 +176,21 @@ export const FileUploadSection = ({
               className="hidden"
               accept={imageOnly ? "image/*" : ".pdf,.jpg,.jpeg,.png,.mp3,.mp4"}
             />
-            <Button
+            <button
               type="button"
-              variant="outline"
+              className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
               onClick={triggerFileInput}
               disabled={uploading}
             >
               {uploading ? (
                 <>
-                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
+                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full inline-block"></div>
                   Uploading...
                 </>
               ) : (
                 "Choose File"
               )}
-            </Button>
+            </button>
           </div>
         )}
       </div>

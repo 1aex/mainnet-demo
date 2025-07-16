@@ -20,6 +20,7 @@ const AppContent: React.FC = () => {
     error, 
     txStatus, 
     txHash, 
+    currentIpAssetId,
     mintedAssets, 
     supabaseAssets,
     walletGroups,
@@ -50,7 +51,7 @@ const AppContent: React.FC = () => {
     <div className="app">
       <header className="app-header">
         <div className="header-content">
-          <h1>🎨 Story Protocol Asset Minting</h1>
+          <h1>🎨 1 Asset Movies IP Vault</h1>
           <p>Register and mint your intellectual property as digital assets</p>
           <WalletConnect />
         </div>
@@ -180,6 +181,7 @@ const AppContent: React.FC = () => {
       <TransactionStatus
         status={txStatus}
         txHash={txHash}
+        ipAssetId={currentIpAssetId}
         error={error || undefined}
         onClose={handleTransactionClose}
       />

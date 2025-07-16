@@ -1,6 +1,7 @@
 import React from 'react'
 import type { AssetMetadata } from '../utils/storyProtocol'
 import { getIPFSUrl } from '../utils/ipfs'
+import { getIPAssetUrl, getTransactionUrl } from '../utils/storyExplorerUrls'
 
 interface Asset {
   ipAssetId: string
@@ -194,7 +195,7 @@ const AssetList: React.FC<AssetListProps> = ({ assets, loading = false }) => {
                     <span 
                       className="truncate transaction-hash clickable"
                       title={`Click to view transaction ${asset.txHash} on Story Explorer`}
-                      onClick={() => window.open(`https://explorer.story.foundation/tx/${asset.txHash}`, '_blank')}
+                      onClick={() => asset.txHash && window.open(getTransactionUrl(asset.txHash), '_blank')}
                       style={{ cursor: 'pointer', color: '#007bff' }}
                     >
                       {asset.txHash}
@@ -267,7 +268,7 @@ const AssetList: React.FC<AssetListProps> = ({ assets, loading = false }) => {
                   View on IPFS
                 </a>
                 <a
-                  href={`https://explorer.story.foundation/ipa/${asset.ipAssetId}`}
+                  href={getIPAssetUrl(asset.ipAssetId)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="action-btn story-explorer"
@@ -278,7 +279,7 @@ const AssetList: React.FC<AssetListProps> = ({ assets, loading = false }) => {
                 </a>
                 {asset.txHash && (
                   <a
-                    href={`https://explorer.story.foundation/tx/${asset.txHash}`}
+                    href={getTransactionUrl(asset.txHash)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="action-btn secondary"

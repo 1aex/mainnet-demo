@@ -10,6 +10,7 @@ export const useStoryProtocol = () => {
   const [error, setError] = useState<string | null>(null)
   const [txStatus, setTxStatus] = useState<'idle' | 'preparing' | 'signing' | 'pending' | 'success' | 'error'>('idle')
   const [txHash, setTxHash] = useState<string>('')
+  const [currentIpAssetId, setCurrentIpAssetId] = useState<string>('')
   const [mintedAssets, setMintedAssets] = useState<Array<{
     ipAssetId: string
     tokenId: string
@@ -129,6 +130,7 @@ export const useStoryProtocol = () => {
       )
 
       setTxHash(result.txHash)
+      setCurrentIpAssetId(result.ipAssetId)
       setTxStatus('pending')
 
       // Wait a bit to simulate transaction confirmation
@@ -233,6 +235,7 @@ export const useStoryProtocol = () => {
   const resetTransactionStatus = useCallback(() => {
     setTxStatus('idle')
     setTxHash('')
+    setCurrentIpAssetId('')
     setError(null)
   }, [])
 
@@ -246,6 +249,7 @@ export const useStoryProtocol = () => {
     error,
     txStatus,
     txHash,
+    currentIpAssetId,
     mintedAssets,
     supabaseAssets,
     walletGroups,

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import type { AssetMetadata } from '../utils/storyProtocol'
 import type { AssetMetadataRow, IPGroupRow, PILTermsRow } from '../utils/supabase'
 import { getSupabaseThumbnailUrl, isSupabaseStorageUrl } from '../utils/supabaseStorage'
+import { getIPAssetUrl, getTransactionUrl } from '../utils/storyExplorerUrls'
 
 interface LocalAsset {
   ipAssetId: string
@@ -484,7 +485,7 @@ const AssetListWithSupabase: React.FC<AssetListWithSupabaseProps> = ({
                     <span 
                       className="truncate transaction-hash clickable"
                       title={`Click to view transaction ${asset.transaction_hash} on Story Explorer`}
-                      onClick={() => window.open(`https://explorer.story.foundation/tx/${asset.transaction_hash}`, '_blank')}
+                      onClick={() => asset.transaction_hash && window.open(getTransactionUrl(asset.transaction_hash), '_blank')}
                       style={{ cursor: 'pointer', color: '#007bff' }}
                     >
                       {asset.transaction_hash}
@@ -598,7 +599,7 @@ const AssetListWithSupabase: React.FC<AssetListWithSupabaseProps> = ({
                   )}
                   {asset.transaction_hash && (
                     <button
-                      onClick={() => window.open(`https://explorer.story.foundation/tx/${asset.transaction_hash}`, '_blank')}
+                      onClick={() => asset.transaction_hash && window.open(getTransactionUrl(asset.transaction_hash), '_blank')}
                       className="action-btn secondary"
                       title={`View transaction ${asset.transaction_hash} on Story Explorer`}
                     >
@@ -608,7 +609,7 @@ const AssetListWithSupabase: React.FC<AssetListWithSupabaseProps> = ({
                   )}
                   {asset.ip_asset_id && (
                     <button
-                      onClick={() => window.open(`https://explorer.story.foundation/ipa/${asset.ip_asset_id}`, '_blank')}
+                      onClick={() => asset.ip_asset_id && window.open(getIPAssetUrl(asset.ip_asset_id), '_blank')}
                       className="action-btn story-explorer"
                       title={`View IP Asset ${asset.ip_asset_id} on Story Explorer`}
                     >

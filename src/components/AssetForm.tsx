@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import FileUpload from './FileUpload'
 import type { AssetMetadata } from '../utils/storyProtocol'
+import type { IPArtifactType } from '../constants/pilTerms'
 
 interface AssetFormProps {
   onSubmit: (metadata: AssetMetadata, fileCid: string) => void
@@ -13,7 +14,7 @@ const AssetForm: React.FC<AssetFormProps> = ({ onSubmit, loading = false }) => {
     description: '',
     externalUrl: '',
     attributes: [{ trait_type: '', value: '' }],
-    ipType: 'other' as 'character' | 'video' | 'image' | 'audio' | 'text' | 'other',
+    ipType: 'image' as IPArtifactType,
     tags: '',
     commercialUse: false,
     derivativesAllowed: true,
@@ -25,7 +26,6 @@ const AssetForm: React.FC<AssetFormProps> = ({ onSubmit, loading = false }) => {
     isPublicMinting: true
   })
   const [fileCid, setFileCid] = useState<string>('')
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
@@ -63,9 +63,8 @@ const AssetForm: React.FC<AssetFormProps> = ({ onSubmit, loading = false }) => {
     }
   }
 
-  const handleFileUploaded = (cid: string, file: File) => {
+  const handleFileUploaded = (cid: string, _file: File) => {
     setFileCid(cid)
-    setUploadedFile(file)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -89,20 +88,20 @@ const AssetForm: React.FC<AssetFormProps> = ({ onSubmit, loading = false }) => {
         attr.trait_type.trim() && attr.value.trim()
       ),
       external_url: formData.externalUrl || undefined,
-      ipType: formData.ipType,
+      ipType: formData.ipType as IPArtifactType,
       tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : [],
       creationDate: new Date().toISOString(),
       license: {
         type: 'custom',
-        commercialUse: formData.commercialUse,
-        derivativesAllowed: formData.derivativesAllowed,
+        commercial_use: formData.commercialUse,
+        derivatives: formData.derivativesAllowed,
         attribution: formData.attribution
       },
       collection: {
         name: formData.collectionName,
         symbol: formData.collectionSymbol,
         description: formData.collectionDescription,
-        isPublicMinting: formData.isPublicMinting
+        public_minting: formData.isPublicMinting
       }
     }
 

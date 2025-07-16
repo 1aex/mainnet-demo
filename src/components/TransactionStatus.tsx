@@ -1,8 +1,10 @@
 import React from 'react'
+import { getTransactionUrl, getIPAssetUrl } from '../utils/storyExplorerUrls'
 
 interface TransactionStatusProps {
   status: 'idle' | 'preparing' | 'signing' | 'pending' | 'success' | 'error'
   txHash?: string
+  ipAssetId?: string
   error?: string
   onClose: () => void
 }
@@ -10,6 +12,7 @@ interface TransactionStatusProps {
 const TransactionStatus: React.FC<TransactionStatusProps> = ({
   status,
   txHash,
+  ipAssetId,
   error,
   onClose
 }) => {
@@ -97,7 +100,7 @@ const TransactionStatus: React.FC<TransactionStatusProps> = ({
               <div className="tx-details">
                 <p>Transaction Hash:</p>
                 <a
-                  href={`https://explorer.story.foundation/tx/${txHash}`}
+                  href={getTransactionUrl(txHash)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="tx-link"
@@ -107,17 +110,30 @@ const TransactionStatus: React.FC<TransactionStatusProps> = ({
               </div>
             )}
             
-            {status === 'success' && txHash && (
+            {status === 'success' && (
               <div className="tx-details">
                 <p>Your IP asset has been successfully minted and registered!</p>
-                <a
-                  href={`https://explorer.story.foundation/tx/${txHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tx-link"
-                >
-                  View on Explorer
-                </a>
+                {ipAssetId && (
+                  <a
+                    href={getIPAssetUrl(ipAssetId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tx-link"
+                  >
+                    View IP Asset on Explorer
+                  </a>
+                )}
+                {txHash && (
+                  <a
+                    href={getTransactionUrl(txHash)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tx-link"
+                    style={{ marginLeft: '10px' }}
+                  >
+                    View Transaction
+                  </a>
+                )}
               </div>
             )}
             

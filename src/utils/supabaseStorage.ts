@@ -16,15 +16,16 @@ export async function uploadToSupabase(
     throw new Error('Supabase not configured')
   }
 
+  // Generate unique filename
+  const timestamp = Date.now()
+  const randomString = Math.random().toString(36).substring(2, 15)
+  const fileExtension = file.name.split('.').pop()
+  const fileName = `${timestamp}_${randomString}.${fileExtension}`
+  
+  // Create the full path
+  const filePath = folder ? `${folder}/${fileName}` : fileName
+
   try {
-    // Generate unique filename
-    const timestamp = Date.now()
-    const randomString = Math.random().toString(36).substring(2, 15)
-    const fileExtension = file.name.split('.').pop()
-    const fileName = `${timestamp}_${randomString}.${fileExtension}`
-    
-    // Create the full path
-    const filePath = folder ? `${folder}/${fileName}` : fileName
 
     console.log('Uploading file:', {
       fileName: file.name,
