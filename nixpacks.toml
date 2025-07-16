@@ -1,5 +1,9 @@
-[providers]
-node = "18"
+providers = ["node"]
+
+[variables]
+NODE_VERSION = "18"
+NPM_CONFIG_PRODUCTION = "false"
+NODE_ENV = "production"
 
 [phases.build]
 cmds = [
@@ -9,7 +13,3 @@ cmds = [
 
 [phases.deploy]
 cmd = "npm run preview"
-
-[variables]
-NPM_CONFIG_PRODUCTION = "false"
-NODE_ENV = "production"
